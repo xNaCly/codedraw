@@ -25,8 +25,19 @@ class Draw {
   #execute(instructions) {}
 }
 
+let editor = null;
+
+function shareURL() {
+  window.location.href =
+    [window.location.origin, window.location.pathname]
+      .filter((e) => e !== "/")
+      .join("/") +
+    "?i=" +
+    btoa(editor?.getValue());
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+  editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
     mode: "text/plain",
     theme: "base16-light",
@@ -48,6 +59,6 @@ TEXT 128 128 Hello World`;
   if (args?.length) {
     text = atob(args);
   }
-  editor.setOption("value", text);
+  editor?.setOption("value", text);
   new Draw();
 });
