@@ -3,10 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖌️</text></svg>"
+    />
+    <script
+      language="javascript"
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://codemirror.net/5/theme/base16-light.css"
+    />
+    <link rel="stylesheet" type="text/css" href="./style.css" />
     <title>CodeDraw</title>
   </head>
   <body>
-    <canvas id="board"></canvas>
+    <h1>CodeDraw</h1>
+    <div class="full-container">
+      <main>
+        <div class="code-container">
+          <textarea id="code"></textarea>
+          <div class="buttons">
+            <button id="share">[Share]</button>
+            <button id="export">[Export]</button>
+          </div>
+        </div>
+        <div class="container">
+          <canvas id="board"></canvas>
+        </div>
+      </main>
+    </div>
     <script src="./main.js"></script>
   </body>
 </html>
