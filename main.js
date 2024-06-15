@@ -29,11 +29,7 @@ let editor = null;
 
 function shareURL() {
   window.location.href =
-    [window.location.origin, window.location.pathname]
-      .filter((e) => e !== "/")
-      .join("/") +
-    "?i=" +
-    btoa(editor?.getValue());
+    window.location.href.split("?")[0] + "?i=" + btoa(editor?.getValue());
 }
 
 document.addEventListener("DOMContentLoaded", () => {
