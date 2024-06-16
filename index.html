@@ -26,14 +26,24 @@
     <title>CodeDraw</title>
   </head>
   <body>
-    <h1>CodeDraw</h1>
+    <div class="header">
+      <h1>CodeDraw</h1>
+      <div>
+        <a href="https://github.com/xnacly" class="button" target="_blank"
+          >[Github]</a
+        >
+        <a href="https://xnacly.me" class="button" target="_blank">[Website]</a>
+      </div>
+    </div>
     <div class="full-container">
       <main>
         <div class="code-container">
           <textarea id="code"></textarea>
           <div class="buttons">
-            <button onclick="shareURL()" id="share">[Share]</button>
-            <button id="export">[Export]</button>
+            <button class="button" onclick="shareURL()" id="share">
+              [Share]
+            </button>
+            <button class="button" disabled id="export">[Export]</button>
           </div>
         </div>
         <div class="container">

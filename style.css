@@ -1,6 +1,7 @@
 :root {
   --fg: #161616;
   --fg10: #16161610;
+  --fg50: #16161650;
   --bg: #f5f5f5;
 }
 * {
@@ -18,13 +19,13 @@ html {
   background-position: 0 0, 50px 50px;
   background-size: 5px 5px;
   height: 100%;
+  overflow: hidden;
 }
 main {
   display: flex;
   width: 100%;
   justify-content: center;
 }
-
 .full-container {
   width: 100%;
   height: 100%;
@@ -32,9 +33,15 @@ main {
   justify-content: center;
   align-items: center;
 }
+.header {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 h1 {
-  margin-top: 1rem;
-  text-align: center;
+  font-size: 3rem;
 }
 #board {
   border: 1px solid var(--fg);
@@ -62,7 +69,7 @@ h1 {
   justify-content: center;
   align-items: center;
 }
-button {
+.button {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
   border: 1px solid var(--fg);
@@ -72,7 +79,11 @@ button {
   cursor: pointer;
   transition: all 250ms ease-in-out;
 }
-button:hover {
+.button:disabled {
+  background-color: var(--fg50);
+  cursor: not-allowed;
+}
+.button:hover {
   position: relative;
   top: 5px;
   box-shadow: 2px 2px;
@@ -84,6 +95,9 @@ button:hover {
   margin-bottom: 1rem;
 }
 @media only screen and (max-width: 1000px) {
+  body {
+    overflow: auto;
+  }
   main {
     flex-direction: column-reverse;
     align-items: center;
@@ -93,6 +107,7 @@ button:hover {
   }
   .full-container {
     align-items: normal;
+    margin-bottom: 2rem;
   }
 }
 @media only screen and (max-width: 600px) {
