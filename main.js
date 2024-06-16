@@ -150,9 +150,14 @@ class Draw {
 }
 
 let editor = null;
+
 function shareURL() {
-  window.location.href =
-    window.location.href.split("?")[0] + "?i=" + btoa(editor?.getValue());
+  if (!navigator.clipboard) {
+    throw new Error("Failed to copy to clipboard");
+  }
+  navigator.clipboard.writeText(
+    window.location.href.split("?")[0] + "?i=" + btoa(editor?.getValue())
+  );
 }
 
 document.addEventListener("DOMContentLoaded", () => {
