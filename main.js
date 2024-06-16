@@ -182,10 +182,19 @@ TEXT 128 128 "Hello World"`;
 
   if (args?.length) {
     text = atob(args);
+  } else {
+    let t = localStorage.getItem("content");
+    if (t) {
+      text = t;
+    }
   }
   let d = new Draw();
   editor.on("update", function () {
-    let instructions = parser(editor.getValue());
+    let val = editor.getValue();
+    if (val.length && !args?.length) {
+      localStorage.setItem("content", val);
+    }
+    let instructions = parser(val);
     d.execute(instructions);
   });
   editor?.setOption("value", text);
