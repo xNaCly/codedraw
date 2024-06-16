@@ -21,12 +21,14 @@ function parser(input) {
         case "":
         case " ":
           continue;
-        case "/" && chars[j + 1]: // skip comment
-          while (j < chars.length) {
-            j++;
-            char = chars[j];
+        case "/": // skip comment
+          if (chars[j + 1] === "/") {
+            while (j < chars.length) {
+              j++;
+              char = chars[j];
+            }
+            continue;
           }
-          continue;
         case '"': {
           j++; // skip "
           char = chars[j];
@@ -85,13 +87,59 @@ class Draw {
   }
 
   /**
-   * @type {Instruction[]} instructions
+   * @param {Instruction[]} instructions
    */
   execute(instructions) {
+    this.#ctx.clearRect(0, 0, this.#board.width, this.#board.height);
     for (let i = 0; i < instructions.length; i++) {
       let instruction = instructions[i];
-      switch (instruction) {
-        // TODO: implement instructions
+      switch (instruction.operation) {
+        case "COLOR":
+          if (instruction.arguments.length !== 1) {
+            throw new Error("COLOR requires exactly one argument");
+          }
+          this.#ctx.fillStyle = instruction.arguments[0];
+          this.#ctx.strokeStyle = instruction.arguments[0];
+          break;
+        case "BOX": {
+          if (instruction.arguments.length !== 4) {
+            throw new Error("BOX requires exactly four arguments (x,y,w,h)");
+          }
+          let [x, y, w, h] = instruction.arguments;
+          this.#ctx.fillRect(x, y, w, h);
+          break;
+        }
+        case "WIDTH": {
+          if (instruction.arguments.length !== 1) {
+            throw new Error("WIDTH requires exactly one argument (width)");
+          }
+          this.#ctx.lineWidth = instruction.arguments[0];
+          break;
+        }
+        case "LINE": {
+          if (instruction.arguments.length !== 4) {
+            throw new Error(
+              "LINE requires exactly four arguments (sx,sy,ex,ey)"
+            );
+          }
+          let [x, y, x1, y1] = instruction.arguments;
+          this.#ctx.beginPath();
+          this.#ctx.moveTo(x, y);
+          this.#ctx.lineTo(x1, y1);
+          this.#ctx.stroke();
+          break;
+        }
+        case "TEXT": {
+          if (instruction.arguments.length < 3) {
+            throw new Error(
+              "TEXT requires at least three arguments (x,y,text, font)"
+            );
+          }
+          let [x, y, text, font] = instruction.arguments;
+          if (font) this.#ctx.font = font;
+          this.#ctx.fillText(text, x, y);
+          break;
+        }
         default:
           throw new Error(
             `Operation "${instruction.operation}" not defined (args:${instruction.arguments})`
@@ -125,15 +173,15 @@ COLOR green
 LINE 0 0 10 10
 
 // write text at 128x128
-TEXT 128 128 Hello World`;
+TEXT 128 128 "Hello World"`;
 
   if (args?.length) {
     text = atob(args);
   }
-  editor?.setOption("value", text);
   let d = new Draw();
   editor.on("update", function () {
     let instructions = parser(editor.getValue());
     d.execute(instructions);
   });
+  editor?.setOption("value", text);
 });
