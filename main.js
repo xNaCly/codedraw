@@ -70,27 +70,27 @@ class Draw {
   /**
    * @type {HTMLCanvasElement|null}
    */
-  #board;
+  board;
   /**
    * @type {CanvasRenderingContext2D|null}
    */
   #ctx;
 
-  constructor(editor) {
-    this.#board = document.getElementById("board");
-    if (this.#board === null) {
+  constructor() {
+    this.board = document.getElementById("board");
+    if (this.board === null) {
       throw new Error("Failed to access canvas board");
     }
-    this.#ctx = this.#board.getContext("2d");
-    this.#board.height = 512;
-    this.#board.width = 512;
+    this.#ctx = this.board.getContext("2d");
+    this.board.height = 512;
+    this.board.width = 512;
   }
 
   /**
    * @param {Instruction[]} instructions
    */
   execute(instructions) {
-    this.#ctx.clearRect(0, 0, this.#board.width, this.#board.height);
+    this.#ctx.clearRect(0, 0, this.board.width, this.board.height);
     for (let i = 0; i < instructions.length; i++) {
       let instruction = instructions[i];
       switch (instruction.operation) {
@@ -150,6 +150,7 @@ class Draw {
 }
 
 let editor = null;
+let draw = null;
 
 function shareURL() {
   if (!navigator.clipboard) {
@@ -158,6 +159,11 @@ function shareURL() {
   navigator.clipboard.writeText(
     window.location.href.split("?")[0] + "?i=" + btoa(editor?.getValue())
   );
+}
+
+function exportImg() {
+  let url = draw?.board.toDataURL();
+  window.open(url, "_blank");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -188,14 +194,14 @@ TEXT 128 128 "Hello World"`;
       text = t;
     }
   }
-  let d = new Draw();
+  draw = new Draw();
   editor.on("update", function () {
     let val = editor.getValue();
     if (val.length && !args?.length) {
       localStorage.setItem("content", val);
     }
     let instructions = parser(val);
-    d.execute(instructions);
+    draw.execute(instructions);
   });
   editor?.setOption("value", text);
 });
