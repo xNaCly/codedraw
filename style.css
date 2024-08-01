@@ -133,3 +133,7 @@ h1 {
     padding-right: 0.5rem;
   }
 }
+
+.CodeMirror {
+  height: fit-content !important;
+}
