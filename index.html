@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Draw with commands, export and share your creations"
+    />
     <link
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🖌️</text></svg>"
@@ -26,7 +30,41 @@
     <title>CodeDraw</title>
   </head>
   <body>
-    <span class="error" id="error"></span>
+    <span class="floating hidden" id="error"></span>
+    <div class="floating hidden" id="documentation">
+      <h3>Instructions</h3>
+      <table class="instructions">
+        <tbody>
+          <tr>
+            <td>COLOR [color]</td>
+            <td>
+              Set a color, supports all values css would support (hex, rgba)
+            </td>
+          </tr>
+          <tr>
+            <td>BOX [x,y,h,w]</td>
+            <td>Draw a box, arguments are start (x,y) & height, width</td>
+          </tr>
+          <tr>
+            <td>WIDTH [width]</td>
+            <td>Width for LINE</td>
+          </tr>
+          <tr>
+            <td>LINE [sx,sy,ex,ey]</td>
+            <td>Draw a line from (sx,sy) to (ex,ey)</td>
+          </tr>
+          <tr>
+            <td>FONT [font]</td>
+            <td>Font for TEXT ([size] [font])</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="buttons">
+        <button class="button" onclick="docs.classList.toggle('hidden')">
+          [Close]
+        </button>
+      </div>
+    </div>
     <div class="header">
       <h1>CodeDraw</h1>
       <div>
@@ -41,12 +79,11 @@
         <div class="code-container">
           <div style="overflow-y: auto">
             <textarea id="code"></textarea>
-            <div class="container">
-              <h3>Instructions</h3>
-              <!-- TODO: document instructions -->
-            </div>
           </div>
           <div class="buttons">
+            <button class="button" onclick="toggleDocs()">
+              [Documentation]
+            </button>
             <button class="button" onclick="shareURL()" id="share">
               [Share]
             </button>

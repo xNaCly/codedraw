@@ -142,14 +142,20 @@ class Draw {
             this.#ctx.stroke();
             break;
           }
+          case "FONT": {
+            if (instruction.arguments.length != 1) {
+              throw new Error("FONT requires exactly one argument (font)");
+            }
+            this.#ctx.font = instruction.arguments[0];
+            break;
+          }
           case "TEXT": {
             if (instruction.arguments.length < 3) {
               throw new Error(
-                "TEXT requires at least three arguments (x,y,text, font)"
+                "TEXT requires exactly three arguments (x,y,text)"
               );
             }
-            let [x, y, text, font] = instruction.arguments;
-            if (font) this.#ctx.font = font;
+            let [x, y, text] = instruction.arguments;
             this.#ctx.fillText(text, x, y);
             break;
           }
@@ -173,6 +179,12 @@ let editor = null;
 let draw = null;
 /**@type{HTMLSpanElement|null}*/
 let errorToast = null;
+/**@type{HTMLDivElement|null}*/
+let docs = null;
+
+function toggleDocs() {
+  docs.classList.toggle("hidden");
+}
 
 function updateToast(text) {
   if (text) {
@@ -187,6 +199,12 @@ function shareURL() {
   if (!navigator.clipboard) {
     throw new Error("Failed to copy to clipboard");
   }
+  errorToast.innerText =
+    "Copied the link to your creation to your clipboard :^)";
+  errorToast.classList.remove("hidden");
+  setTimeout(() => {
+    errorToast.classList.add("hidden");
+  }, 3000);
   navigator.clipboard.writeText(
     window.location.href.split("?")[0] + "?i=" + btoa(editor?.getValue())
   );
@@ -204,6 +222,8 @@ window.onerror = (msg) => {
 
 document.addEventListener("DOMContentLoaded", () => {
   errorToast = document.getElementById("error");
+  docs = document.getElementById("documentation");
+
   editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
     mode: "text/plain",
