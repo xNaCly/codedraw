@@ -133,7 +133,23 @@ h1 {
     padding-right: 0.5rem;
   }
 }
-
 .CodeMirror {
   height: fit-content !important;
+}
+.hidden {
+  display: none;
+}
+.error {
+  z-index: 999;
+  position: absolute;
+  top: 15%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 27rem;
+  box-shadow: 5px 5px;
+  border: 1px solid var(--fg);
+  background-color: var(--bg);
+  padding: 0.5rem;
 }

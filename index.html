@@ -26,6 +26,7 @@
     <title>CodeDraw</title>
   </head>
   <body>
+    <span class="error" id="error"></span>
     <div class="header">
       <h1>CodeDraw</h1>
       <div>
@@ -39,11 +40,11 @@
       <main>
         <div class="code-container">
           <div style="overflow-y: auto">
+            <textarea id="code"></textarea>
             <div class="container">
               <h3>Instructions</h3>
               <!-- TODO: document instructions -->
             </div>
-            <textarea id="code"></textarea>
           </div>
           <div class="buttons">
             <button class="button" onclick="shareURL()" id="share">
