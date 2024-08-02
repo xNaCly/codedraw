@@ -231,18 +231,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   let args = new URLSearchParams(location.search).get("i");
-  let text = `// set the color to red
-COLOR #ff0000
-// draw a red box at 256 256
-BOX 256 256 1 1
-
-// set the color to green
-COLOR green
-// draw a line from 0x0 to 10x10
-LINE 0 0 10 10
-
-// write text at 128x128
-TEXT 128 128 "Hello World"`;
+  let text = `// click on [Documentation] for a list of instructions
+// click on [Share] to share your creations with friends
+// click on [Export] to generate an image from your drawing
+COLOR rgb(83,223,221)
+BOX 0 0 512 512
+COLOR white
+FONT "48px monospace"
+TEXT 130 260 "HELLO WORLD"
+TEXT 240 350 "<3"
+// made with <3 by xnacly :^)`;
 
   if (args?.length) {
     text = atob(args);
