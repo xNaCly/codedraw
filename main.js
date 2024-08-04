@@ -220,13 +220,30 @@ window.onerror = (msg) => {
   return false;
 };
 
+CodeMirror.defineSimpleMode("codedraw", {
+  start: [
+    { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string" },
+    { regex: /[A-Z]/, token: "keyword" },
+    { regex: /[a-z]/, token: "atom" },
+    {
+      regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
+      token: "number",
+    },
+    { regex: /[,\)\(]/, token: "operator" },
+    { regex: /\/\/.*/, token: "comment" },
+  ],
+  meta: {
+    lineComment: "//",
+  },
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   errorToast = document.getElementById("error");
   docs = document.getElementById("documentation");
 
   editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
-    mode: "text/plain",
+    mode: "codedraw",
     theme: "base16-light",
   });
 
