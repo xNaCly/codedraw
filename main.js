@@ -40,7 +40,12 @@ function parser(input) {
               char = chars[column];
             }
             if (char !== '"') {
-              throw new Error("Unterminated string");
+              throw {
+                name: "LexerError",
+                message: "Unterminated String",
+                from: start,
+                to: column,
+              };
             }
             lexemes.push(lines[line].substring(start, column++));
             break;
@@ -98,6 +103,15 @@ class Draw {
     this.board.width = 512;
   }
 
+  genErr(instruction, msg) {
+    return {
+      name: "ExecutionError",
+      message: msg,
+      from: instruction.column - instruction.operation.length,
+      to: instruction.column,
+    };
+  }
+
   /**
    * @param {Instruction[]} instructions
    */
@@ -109,14 +123,20 @@ class Draw {
         switch (instruction.operation) {
           case "COLOR":
             if (instruction.arguments.length !== 1) {
-              throw new Error("COLOR requires exactly one argument");
+              throw this.genErr(
+                instruction,
+                "COLOR requires exactly one argument"
+              );
             }
             this.#ctx.fillStyle = instruction.arguments[0];
             this.#ctx.strokeStyle = instruction.arguments[0];
             break;
           case "BOX": {
             if (instruction.arguments.length !== 4) {
-              throw new Error("BOX requires exactly four arguments (x,y,w,h)");
+              throw this.genErr(
+                instruction,
+                "BOX requires exactly four arguments (x,y,w,h)"
+              );
             }
             let [x, y, w, h] = instruction.arguments;
             this.#ctx.fillRect(x, y, w, h);
@@ -124,14 +144,18 @@ class Draw {
           }
           case "WIDTH": {
             if (instruction.arguments.length !== 1) {
-              throw new Error("WIDTH requires exactly one argument (width)");
+              throw this.genErr(
+                instruction,
+                "WIDTH requires exactly one argument (width)"
+              );
             }
             this.#ctx.lineWidth = instruction.arguments[0];
             break;
           }
           case "LINE": {
             if (instruction.arguments.length !== 4) {
-              throw new Error(
+              throw this.genErr(
+                instruction,
                 "LINE requires exactly four arguments (sx,sy,ex,ey)"
               );
             }
@@ -144,14 +168,18 @@ class Draw {
           }
           case "FONT": {
             if (instruction.arguments.length != 1) {
-              throw new Error("FONT requires exactly one argument (font)");
+              throw this.genErr(
+                instruction,
+                "FONT requires exactly one argument (font)"
+              );
             }
             this.#ctx.font = instruction.arguments[0];
             break;
           }
           case "TEXT": {
             if (instruction.arguments.length < 3) {
-              throw new Error(
+              throw this.genErr(
+                instruction,
                 "TEXT requires exactly three arguments (x,y,text)"
               );
             }
@@ -160,7 +188,8 @@ class Draw {
             break;
           }
           default:
-            throw new Error(
+            throw this.genErr(
+              instruction,
               `Operation "${instruction.operation}" not defined (args:${instruction.arguments})`
             );
         }
@@ -220,38 +249,37 @@ window.onerror = (msg) => {
   return false;
 };
 
-CodeMirror.defineSimpleMode("codedraw", {
-  start: [
-    { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string" },
-    { regex: /[A-Z]/, token: "keyword" },
-    { regex: /[a-z]/, token: "atom" },
-    {
-      regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
-      token: "number",
-    },
-    { regex: /[,\)\(]/, token: "operator" },
-    { regex: /\/\/.*/, token: "comment" },
-  ],
-  meta: {
-    lineComment: "//",
-  },
-});
-
 document.addEventListener("DOMContentLoaded", () => {
+  CodeMirror.defineSimpleMode("codedraw", {
+    start: [
+      { regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string" },
+      { regex: /[A-Z]/, token: "keyword" },
+      { regex: /[a-z#]/, token: "atom" },
+      {
+        regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i,
+        token: "number",
+      },
+      { regex: /[,\)\(]/, token: "operator" },
+      { regex: /\/\/.*/, token: "comment" },
+    ],
+    meta: {
+      lineComment: "//",
+    },
+  });
   errorToast = document.getElementById("error");
   docs = document.getElementById("documentation");
 
   editor = CodeMirror.fromTextArea(document.getElementById("code"), {
     lineNumbers: true,
     mode: "codedraw",
-    theme: "base16-light",
+    theme: "neo",
   });
 
   let args = new URLSearchParams(location.search).get("i");
   let text = `// click on [Documentation] for a list of instructions
 // click on [Share] to share your creations with friends
 // click on [Export] to generate an image from your drawing
-COLOR rgb(83,223,221)
+COLOR rgba(117,67,138,1)
 BOX 0 0 512 512
 COLOR white
 FONT "48px monospace"
@@ -274,8 +302,13 @@ TEXT 240 350 "<3"
     if (val.length && !args?.length) {
       localStorage.setItem("content", val);
     }
-    let instructions = parser(val);
-    draw.execute(instructions);
+    try {
+      let instructions = parser(val);
+      draw.execute(instructions);
+    } catch (e) {
+      console.table(e);
+      updateToast(e.message);
+    }
   });
   editor?.setOption("value", text);
 });
