@@ -177,7 +177,7 @@ class Draw {
             break;
           }
           case "TEXT": {
-            if (instruction.arguments.length < 3) {
+            if (instruction.arguments.length != 3) {
               throw this.genErr(
                 instruction,
                 "TEXT requires exactly three arguments (x,y,text)"
